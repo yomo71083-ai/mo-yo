@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تواصل معنا</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #2a2a3a;
+      --accent: #c8a96e;
+      --accent2: #e8c98e;
+      --text: #f0ede8;
+      --muted: #8a8799;
+      --glow: rgba(200, 169, 110, 0.15);
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(200,169,110,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(100,80,180,0.06) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Geometric grid lines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-right: 2rem;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--accent); }
+
+    /* Hero section */
+    .hero {
+      padding: 5rem 4rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .hero-label::before {
+      content: '';
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, #f0d9a0 50%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.8;
+    }
+
+    /* Main content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 4rem 6rem;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    /* Info cards */
+    .info-section {
+      animation: fadeRight 0.9s 0.4s ease both;
+    }
+
+    .info-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.6rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--glow), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .contact-card:hover {
+      border-color: var(--accent);
+      transform: translateX(-4px);
+      box-shadow: 0 8px 40px rgba(200,169,110,0.12);
+    }
+
+    .contact-card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(200,169,110,0.2), rgba(200,169,110,0.05));
+      border: 1px solid rgba(200,169,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .card-text h3 {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-text p {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Social links */
+    .social-section {
+      margin-top: 2.5rem;
+    }
+
+    .social-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .social-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(200,169,110,0.08);
+    }
+
+    /* Form */
+    .form-section {
+      animation: fadeLeft 0.9s 0.5s ease both;
+    }
+
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
+    }
+
+    .form-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .form-header h2 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1.1rem;
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s;
+      direction: rtl;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(138,135,153,0.5);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+      background: rgba(200,169,110,0.03);
+    }
+
+    select option { background: var(--card); }
+
+    textarea {
+      resize: none;
+      min-height: 130px;
+      line-height: 1.7;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.1rem 2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 14px;
+      color: #0a0a0f;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(200,169,110,0.35);
+    }
+
+    .submit-btn:hover::before { opacity: 1; }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .success-msg.show { display: block; }
+
+    .success-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .success-msg h3 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+    }
+
+    .success-msg p { color: var(--muted); }
+
+    /* Decorative line */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 1.5rem 0;
+    }
+
+    /* Hours badge */
+    .hours-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(200,169,110,0.1);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 50px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.82rem;
+      color: var(--accent);
+      margin-top: 1.5rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      header { padding: 1.5rem 2rem; }
+      .hero, .main-content { padding-right: 2rem; padding-left: 2rem; }
+      .main-content { grid-template-columns: 1fr; gap: 2.5rem; }
+      .info-section { order: 2; }
+      .form-section { order: 1; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 3rem; letter-spacing: -1px; }
+    }
+
+    @media (max-width: 500px) {
+      .form-card { padding: 2rem 1.5rem; }
+      header { padding: 1.2rem 1.5rem; }
+      nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">◈ شركتي</div>
+    <nav>
+      <a href="#">الرئيسية</a>
+      <a href="#">خدماتنا</a>
+      <a href="#">من نحن</a>
+      <a href="#" style="color: var(--accent);">تواصل معنا</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">تواصل معنا</div>
+    <h1>نحن هنا<br /><span>لمساعدتك</span></h1>
+    <p>لا تتردد في التواصل معنا في أي وقت. فريقنا متاح للإجابة على جميع استفساراتك.</p>
+    <div class="hours-badge">
+      <span class="dot"></span>
+      متاحون الآن · السبت – الخميس، ٩ص – ٦م
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <!-- Info -->
+    <div class="info-section">
+      <div class="info-title">معلومات التواصل</div>
+
+      <div class="contact-card">
+        <div class="card-icon">📞</div>
+        <div class="card-text">
+          <h3>الهاتف</h3>
+          <p>01006443783</p>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="card-icon">✉️</div>
+        <div class="card-text">
+          <h3>البريد الإلكتروني</h3>
+          <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f06101210484e4f474c3f18121e1613511c1012">[email&#160;protected]</a></p>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="card-icon">📍</div>
+        <div class="card-text">
+          <h3>العنوان</h3>
+          <p>مصر، الغردقة</p>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <div class="card-icon">💬</div>
+        <div class="card-text">
+          <h3>واتساب</h3>
+          <p>01006443783</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="social-section">
+        <div class="social-title">تابعنا</div>
+        <div class="social-links">
+          <a class="social-btn" href="#">𝕏 تويتر</a>
+          <a class="social-btn" href="#">📸 انستغرام</a>
+          <a class="social-btn" href="#">in لينكدإن</a>
+          <a class="social-btn" href="#">▶️ يوتيوب</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <div class="form-card">
+
+        <!-- Form itself -->
+        <div id="formWrapper">
+          <div class="form-header">
+            <h2>أرسل لنا رسالة</h2>
+            <p>سنرد عليك خلال 24 ساعة عمل</p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>الاسم الأول</label>
+              <input id="firstName" type="text" placeholder="محمد" />
+            </div>
+            <div class="form-group">
+              <label>الاسم الأخير</label>
+              <input id="lastName" type="text" placeholder="الأحمد" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input id="email" type="email" placeholder="example@email.com" />
+          </div>
+
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input id="phone" type="tel" placeholder="+966 5X XXX XXXX" />
+          </div>
+
+          <div class="form-group">
+            <label>موضوع الرسالة</label>
+            <select id="subject">
+              <option value="">— اختر الموضوع —</option>
+              <option>استفسار عام</option>
+              <option>طلب عرض سعر</option>
+              <option>الدعم الفني</option>
+              <option>الشراكات</option>
+              <option>شكوى أو اقتراح</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>رسالتك</label>
+            <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+          </div>
+
+          <div id="errorMsg" style="display:none; color:#f87171; font-size:0.88rem; margin-bottom:1rem; text-align:center;"></div>
+
+          <button class="submit-btn" onclick="handleSubmit()">إرسال الرسالة →</button>
+        </div>
+
+        <!-- Success message -->
+        <div class="success-msg" id="successMsg">
+          <div class="success-icon">✓</div>
+          <h3>تم الإرسال بنجاح!</h3>
+          <p>شكراً لتواصلك معنا.<br />سيقوم فريقنا بالرد عليك في أقرب وقت.</p>
+          <div class="divider" style="margin-top:2rem;"></div>
+          <button class="submit-btn" style="margin-top:1rem; max-width:200px; display:block; margin:1.5rem auto 0;" onclick="resetForm()">إرسال رسالة أخرى</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function handleSubmit() {
+    const btn = document.querySelector('#formWrapper .submit-btn');
+    const errEl = document.getElementById('errorMsg');
+    errEl.style.display = 'none';
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const subject   = document.getElementById('subject').value;
+    const message   = document.getElementById('message').value.trim();
+
+    if (!firstName || !email || !message) {
+      errEl.textContent = '⚠️ يرجى ملء حقول الاسم، البريد الإلكتروني، والرسالة.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const toEmail     = 'yomo71083@gmail.com';
+    const subjectLine = encodeURIComponent('رسالة جديدة من الموقع — ' + (subject || 'استفسار عام'));
+    const body        = encodeURIComponent(
+      'الاسم: ' + firstName + ' ' + lastName + '\n' +
+      'البريد الإلكتروني: ' + email + '\n' +
+      'رقم الهاتف: ' + (phone || 'لم يذكر') + '\n' +
+      'الموضوع: ' + (subject || 'غير محدد') + '\n\n' +
+      'الرسالة:\n' + message
+    );
+
+    btn.textContent = '⏳ جارٍ الفتح...';
+    btn.style.opacity = '0.7';
+
+    window.location.href = 'mailto:' + toEmail + '?subject=' + subjectLine + '&body=' + body;
+
+    setTimeout(() => {
+      document.getElementById('formWrapper').style.display = 'none';
+      document.getElementById('successMsg').classList.add('show');
+      btn.textContent = 'إرسال الرسالة →';
+      btn.style.opacity = '1';
+    }, 1500);
+  }
+
+  function resetForm() {
+    document.getElementById('formWrapper').style.display = 'block';
+    document.getElementById('successMsg').classList.remove('show');
+    document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+    document.querySelector('select').value = '';
+    const btn = document.querySelector('#formWrapper .submit-btn');
+    btn.textContent = 'إرسال الرسالة →';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  }
+
+  document.querySelectorAll('.contact-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.background = 'radial-gradient(circle at ' + x + '% ' + y + '%, #1e1e2a, var(--card))';
+    });
+    card.addEventListener('mouseleave', () => { card.style.background = ''; });
+  });
+</script>
+</body>
+</html>
