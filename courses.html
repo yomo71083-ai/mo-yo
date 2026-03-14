@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>المسارات – كودماستر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050810;
+      --card: #111827;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --accent3: #f97316;
+      --text: #e8edf5;
+      --muted: #7a8ba0;
+      --border: rgba(0,229,255,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5,8,16,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .logo span { -webkit-text-fill-color: var(--accent3); }
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+    nav ul a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: .95rem;
+      font-weight: 600;
+      transition: color .2s;
+      position: relative;
+    }
+    nav ul a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; right: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      transition: width .3s;
+    }
+    nav ul a:hover, nav ul a.active { color: var(--accent); }
+    nav ul a:hover::after, nav ul a.active::after { width: 100%; }
+    .nav-btn {
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      padding: .55rem 1.6rem;
+      border-radius: 50px;
+      font-family: 'Cairo', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .25s, color .25s;
+    }
+    .nav-btn:hover { background: var(--accent); color: #000; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: .55rem 1.4rem;
+      border-radius: 50px;
+      font-family: 'Cairo', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 30px rgba(0,229,255,0.2);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,229,255,0.35); }
+
+    /* PAGE HEADER */
+    .page-header {
+      position: relative;
+      z-index: 1;
+      padding: 10rem 2rem 5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.15;
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 400px; height: 400px; background: var(--accent2); top: -80px; right: -80px; }
+    .blob-2 { width: 300px; height: 300px; background: var(--accent); bottom: 0; left: -60px; animation-delay: -5s; }
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to { transform: translate(30px,-30px) scale(1.1); }
+    }
+    .page-header .label {
+      display: inline-block;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      animation: fadeUp .7s ease both;
+    }
+    .page-header h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      animation: fadeUp .7s ease .1s both;
+    }
+    .page-header h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.8;
+      animation: fadeUp .7s ease .2s both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* FILTER TABS */
+    .filters {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      padding: 0 2rem 3rem;
+      animation: fadeUp .7s ease .3s both;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: .55rem 1.4rem;
+      border-radius: 50px;
+      font-family: 'Cairo', sans-serif;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(0,229,255,0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* COURSES GRID */
+    .courses-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 2rem 8rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .course-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp .6s ease forwards;
+    }
+    .course-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .course-card:nth-child(1) { animation-delay: .05s; border-color: rgba(0,229,255,0.2); }
+    .course-card:nth-child(2) { animation-delay: .1s; border-color: rgba(124,58,237,0.2); }
+    .course-card:nth-child(3) { animation-delay: .15s; border-color: rgba(249,115,22,0.2); }
+    .course-card:nth-child(4) { animation-delay: .2s; border-color: rgba(16,185,129,0.2); }
+    .course-card:nth-child(5) { animation-delay: .25s; border-color: rgba(0,229,255,0.2); }
+    .course-card:nth-child(6) { animation-delay: .3s; border-color: rgba(124,58,237,0.2); }
+    .course-card:hover:nth-child(1), .course-card:hover:nth-child(5) { border-color: var(--accent); }
+    .course-card:hover:nth-child(2), .course-card:hover:nth-child(6) { border-color: var(--accent2); }
+    .course-card:hover:nth-child(3) { border-color: var(--accent3); }
+    .course-card:hover:nth-child(4) { border-color: #10b981; }
+
+    .card-top {
+      padding: 2rem 2rem 1.5rem;
+      position: relative;
+    }
+    .card-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .card-badge {
+      position: absolute;
+      top: 1.5rem; left: 1.5rem;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .25rem .8rem;
+      border-radius: 50px;
+    }
+    .badge-popular { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+    .badge-new { background: rgba(124,58,237,0.1); color: var(--accent2); border: 1px solid rgba(124,58,237,0.2); }
+    .badge-hot { background: rgba(249,115,22,0.1); color: var(--accent3); border: 1px solid rgba(249,115,22,0.2); }
+
+    .card-top h3 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: .6rem;
+      line-height: 1.3;
+    }
+    .card-top p { font-size: .9rem; color: var(--muted); line-height: 1.7; }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      padding: 0 2rem 1.2rem;
+    }
+    .tag {
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .2rem .7rem;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    .card-divider { height: 1px; background: var(--border); margin: 0 2rem; }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .card-meta-left { display: flex; gap: 1rem; }
+    .card-meta span { display: flex; align-items: center; gap: .3rem; }
+    .stars-row { color: #fbbf24; font-size: .8rem; letter-spacing: 1px; }
+
+    .card-footer {
+      padding: 1.2rem 2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+    .card-price {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card-price .free { color: #10b981; -webkit-text-fill-color: #10b981; }
+    .card-cta {
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: var(--accent);
+      padding: .55rem 1.4rem;
+      border-radius: 50px;
+      font-family: 'Cairo', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s, transform .2s;
+    }
+    .card-cta:hover { background: rgba(0,229,255,0.15); transform: scale(1.04); }
+
+    /* PROGRESS BAR in card */
+    .card-progress { padding: 0 2rem 1.5rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; }
+    .progress-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 10px; }
+
+    /* INSTRUCTOR ROW */
+    .instructor-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: 0 2rem 1.2rem;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .inst-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      nav ul { display: none; }
+      .courses-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">كود<span>ماستر</span></a>
+  <ul>
+    <li><a href="courses.html" class="active">المسارات</a></li>
+    <li><a href="index.html#features">المميزات</a></li>
+    <li><a href="index.html#reviews">آراء الطلاب</a></li>
+    <li><a href="contact.html">تواصل معنا</a></li>
+  </ul>
+  <div style="display:flex;gap:.8rem;align-items:center">
+    <a href="login.html" class="nav-btn">تسجيل الدخول</a>
+    <a href="register.html" class="btn-primary">ابدأ مجاناً</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="label">المسارات التعليمية</div>
+  <h1>اختر مسارك<br/><em>واحترف من الصفر</em></h1>
+  <p>كل مسار مصمم بعناية مع خبراء الصناعة — تعلّم بالمشاريع الحقيقية واحصل على شهادة معترف بها.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="filters reveal">
+  <button class="filter-btn active" onclick="filterCourses('all', this)">الكل</button>
+  <button class="filter-btn" onclick="filterCourses('web', this)">🌐 تطوير الويب</button>
+  <button class="filter-btn" onclick="filterCourses('ai', this)">🤖 ذكاء اصطناعي</button>
+  <button class="filter-btn" onclick="filterCourses('mobile', this)">📱 تطبيقات</button>
+  <button class="filter-btn" onclick="filterCourses('cloud', this)">☁️ سحابة</button>
+  <button class="filter-btn" onclick="filterCourses('free', this)">🎁 مجاني</button>
+</div>
+
+<!-- COURSES GRID -->
+<div class="courses-section">
+  <div class="courses-grid" id="grid">
+
+    <!-- Card 1 -->
+    <a href="register.html" class="course-card" data-cat="web">
+      <div class="card-top">
+        <span class="card-badge badge-popular">الأكثر طلباً</span>
+        <div class="card-icon" style="background:rgba(0,229,255,0.08);">🌐</div>
+        <h3>تطوير الويب الكامل</h3>
+        <p>من HTML وCSS حتى React وNode.js وقواعد البيانات. كل ما تحتاجه لتصبح Full Stack Developer.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span>
+        <span class="tag">React</span><span class="tag">Node.js</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">👨‍💻</div>
+        <span>م. خالد إبراهيم</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:var(--accent)">٨٥ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٦ أشهر</span>
+          <span>👥 ١٢,٠٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٤.٩</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">٢٩٩ ج.م<span style="font-size:.75rem;color:var(--muted);-webkit-text-fill-color:var(--muted)">/شهر</span></div>
+        <span class="card-cta">سجّل الآن ←</span>
+      </div>
+    </a>
+
+    <!-- Card 2 -->
+    <a href="register.html" class="course-card" data-cat="ai">
+      <div class="card-top">
+        <span class="card-badge badge-hot">🔥 الأكثر نمواً</span>
+        <div class="card-icon" style="background:rgba(124,58,237,0.08);">🤖</div>
+        <h3>الذكاء الاصطناعي وتعلم الآلة</h3>
+        <p>Python, ML, Deep Learning وبناء نماذج الذكاء الاصطناعي. ادخل أكثر مجالات سوق العمل طلباً.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">Scikit-learn</span>
+        <span class="tag">OpenCV</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">👩‍🔬</div>
+        <span>د. منى السيد</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:var(--accent2)">٧٢ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--accent2),var(--accent3))"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٨ أشهر</span>
+          <span>👥 ٨,٥٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٤.٨</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">٣٤٩ ج.م<span style="font-size:.75rem;color:var(--muted);-webkit-text-fill-color:var(--muted)">/شهر</span></div>
+        <span class="card-cta" style="border-color:rgba(124,58,237,0.3);color:var(--accent2);background:rgba(124,58,237,0.08)">سجّل الآن ←</span>
+      </div>
+    </a>
+
+    <!-- Card 3 -->
+    <a href="register.html" class="course-card" data-cat="mobile">
+      <div class="card-top">
+        <span class="card-badge badge-new">✨ جديد</span>
+        <div class="card-icon" style="background:rgba(249,115,22,0.08);">📱</div>
+        <h3>تطوير تطبيقات الموبايل</h3>
+        <p>Flutter وReact Native لبناء تطبيقات iOS وAndroid احترافية من فكرة واحدة بكود واحد.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Flutter</span><span class="tag">Dart</span><span class="tag">React Native</span>
+        <span class="tag">Firebase</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">👨‍🎨</div>
+        <span>م. يوسف نادر</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:var(--accent3)">٦٠ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--accent3),#f59e0b)"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٥ أشهر</span>
+          <span>👥 ٦,٢٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٤.٧</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">٢٧٩ ج.م<span style="font-size:.75rem;color:var(--muted);-webkit-text-fill-color:var(--muted)">/شهر</span></div>
+        <span class="card-cta" style="border-color:rgba(249,115,22,0.3);color:var(--accent3);background:rgba(249,115,22,0.08)">سجّل الآن ←</span>
+      </div>
+    </a>
+
+    <!-- Card 4 -->
+    <a href="register.html" class="course-card" data-cat="cloud">
+      <div class="card-top">
+        <div class="card-icon" style="background:rgba(16,185,129,0.08);">☁️</div>
+        <h3>الحوسبة السحابية وDevOps</h3>
+        <p>AWS, Docker, Kubernetes وCI/CD. تعلم إدارة البنية التحتية وتوسيع التطبيقات على نطاق واسع.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Kubernetes</span>
+        <span class="tag">CI/CD</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">👨‍💼</div>
+        <span>م. عمرو طارق</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:#10b981">٥٥ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#10b981,var(--accent))"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٤ أشهر</span>
+          <span>👥 ٤,٨٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٤.٩</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">٣١٩ ج.م<span style="font-size:.75rem;color:var(--muted);-webkit-text-fill-color:var(--muted)">/شهر</span></div>
+        <span class="card-cta" style="border-color:rgba(16,185,129,0.3);color:#10b981;background:rgba(16,185,129,0.08)">سجّل الآن ←</span>
+      </div>
+    </a>
+
+    <!-- Card 5 – Free -->
+    <a href="register.html" class="course-card" data-cat="web free">
+      <div class="card-top">
+        <span class="card-badge badge-popular">🎁 مجاني</span>
+        <div class="card-icon" style="background:rgba(0,229,255,0.08);">🖥️</div>
+        <h3>أساسيات البرمجة للمبتدئين</h3>
+        <p>مسار مجاني للمبتدئين تماماً. تعلم مفاهيم البرمجة الأساسية بأسلوب بسيط وممتع.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Python</span><span class="tag">منطق البرمجة</span><span class="tag">خوارزميات</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">👩‍🏫</div>
+        <span>أ. سلمى حسن</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:#10b981">٢٠ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#10b981,var(--accent))"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٤ أسابيع</span>
+          <span>👥 ٢١,٠٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٥.٠</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price free">مجاني 🎉</div>
+        <span class="card-cta">ابدأ الآن ←</span>
+      </div>
+    </a>
+
+    <!-- Card 6 -->
+    <a href="register.html" class="course-card" data-cat="ai">
+      <div class="card-top">
+        <span class="card-badge badge-new">✨ جديد</span>
+        <div class="card-icon" style="background:rgba(124,58,237,0.08);">💬</div>
+        <h3>بناء تطبيقات الـ AI</h3>
+        <p>تعلم بناء تطبيقات ذكية باستخدام OpenAI API وLangChain وبناء Chatbots احترافية.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">OpenAI</span><span class="tag">LangChain</span><span class="tag">Python</span>
+        <span class="tag">API</span>
+      </div>
+      <div class="instructor-row">
+        <div class="inst-avatar">🧑‍🔬</div>
+        <span>م. كريم فاروق</span>
+      </div>
+      <div class="card-progress">
+        <div class="progress-label"><span>إجمالي التقدم</span><span style="color:var(--accent2)">٤٥ درس</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--accent2),var(--accent))"></div></div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-meta">
+        <div class="card-meta-left">
+          <span>⏱ ٣ أشهر</span>
+          <span>👥 ٣,٩٠٠ طالب</span>
+        </div>
+        <div>
+          <div class="stars-row">★★★★★</div>
+          <div style="font-size:.72rem;color:var(--muted);text-align:center">٤.٨</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price">٣٩٩ ج.م<span style="font-size:.75rem;color:var(--muted);-webkit-text-fill-color:var(--muted)">/شهر</span></div>
+        <span class="card-cta" style="border-color:rgba(124,58,237,0.3);color:var(--accent2);background:rgba(124,58,237,0.08)">سجّل الآن ←</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid var(--border);padding:3rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;">
+  <a href="index.html" class="logo">كود<span>ماستر</span></a>
+  <p style="font-size:.85rem;color:var(--muted)">© ٢٠٢٥ كودماستر — جميع الحقوق محفوظة</p>
+  <div style="display:flex;gap:1.5rem">
+    <a href="#" style="font-size:.85rem;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">سياسة الخصوصية</a>
+    <a href="#" style="font-size:.85rem;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">الشروط والأحكام</a>
+    <a href="contact.html" style="font-size:.85rem;color:var(--muted);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">تواصل معنا</a>
+  </div>
+</footer>
+
+<script>
+  // Filter
+  function filterCourses(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.course-card').forEach(card => {
+      const cats = card.dataset.cat || '';
+      if (cat === 'all' || cats.includes(cat)) {
+        card.style.display = 'flex';
+        card.style.animation = 'none';
+        card.offsetHeight;
+        card.style.animation = 'fadeUp .5s ease forwards';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
