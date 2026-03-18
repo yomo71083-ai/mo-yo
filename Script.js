@@ -3,8 +3,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC2Goh5PEdW5WK3FkosvBMY6S5FZpTuayY",
+const firebas",
   authDomain: "code-master-eea4a.firebaseapp.com",
   projectId: "code-master-eea4a",
   storageBucket: "code-master-eea4a.firebasestorage.app",
