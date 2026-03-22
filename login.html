@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول – كودماستر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg: #050810;
+      --card: #111827;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --accent3: #f97316;
+      --text: #e8edf5;
+      --muted: #7a8ba0;
+      --border: rgba(0,229,255,0.12);
+      --input-bg: rgba(255,255,255,0.04);
+      --input-border: rgba(255,255,255,0.1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.2; animation: drift 9s ease-in-out infinite alternate; }
+    .b1 { width: 420px; height: 420px; background: var(--accent); top: -100px; left: -80px; }
+    .b2 { width: 300px; height: 300px; background: var(--accent2); bottom: -60px; right: 40px; animation-delay: -4s; }
+    .b3 { width: 200px; height: 200px; background: var(--accent3); top: 50%; right: 50%; animation-delay: -7s; }
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to { transform: translate(30px,-30px) scale(1.12); }
+    }
+
+    .left-logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      margin-bottom: 4rem;
+      display: inline-block;
+    }
+    .left-logo span { -webkit-text-fill-color: var(--accent3); }
+
+    .left-content h2 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+      animation: fadeUp .7s ease both;
+    }
+    .left-content h2 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .left-content p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s ease .1s both;
+    }
+
+    .stats { display: flex; gap: 2rem; animation: fadeUp .7s ease .2s both; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+
+    .left-tracks {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      animation: fadeUp .7s ease .3s both;
+    }
+    .track-pill {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .8rem 1.2rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: .88rem;
+      color: var(--muted);
+      transition: border-color .2s;
+    }
+    .track-pill:hover { border-color: rgba(0,229,255,0.3); color: var(--text); }
+    .track-pill span { font-size: 1.1rem; }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      width: 500px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+      border-right: 1px solid var(--border);
+      background: rgba(13,18,32,0.6);
+      backdrop-filter: blur(20px);
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp .7s ease .1s both;
+    }
+    .form-box h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: .4rem;
+    }
+    .form-box > p { color: var(--muted); font-size: .9rem; margin-bottom: 2rem; }
+    .form-box > p a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+    /* Google Sign-In container */
+    .google-signin-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .google-signin-wrap > div { width: 100% !important; }
+
+    /* Welcome msg */
+    .google-welcome {
+      display: none;
+      margin-bottom: 1rem;
+      padding: .9rem 1.2rem;
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 12px;
+      font-size: .88rem;
+      color: #10b981;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .field { margin-bottom: 1.1rem; }
+    .field label { display: block; font-size: .82rem; font-weight: 700; color: var(--muted); margin-bottom: .4rem; }
+    .field-wrap { position: relative; }
+    .field-wrap .icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      pointer-events: none;
+      opacity: .5;
+    }
+    .field input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 12px;
+      padding: .8rem 2.6rem .8rem 1rem;
+      font-family: 'Cairo', sans-serif;
+      font-size: .92rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .field input::placeholder { color: rgba(122,139,160,0.6); }
+    .field input:focus {
+      border-color: var(--accent);
+      background: rgba(0,229,255,0.04);
+      box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+    }
+    .field input.error { border-color: #ef4444; }
+    .err-msg { font-size: .75rem; color: #ef4444; margin-top: .3rem; display: none; }
+    .field input.error ~ .err-msg { display: block; }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: .83rem;
+    }
+    .remember { display: flex; align-items: center; gap: .5rem; color: var(--muted); }
+    .remember input { accent-color: var(--accent); }
+    .forgot { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .forgot:hover { text-decoration: underline; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      box-shadow: 0 0 30px rgba(0,229,255,0.2);
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,255,0.35); }
+    .submit-btn.loading { opacity: .7; pointer-events: none; }
+
+    .register-link { text-align: center; margin-top: 1.2rem; font-size: .85rem; color: var(--muted); }
+    .register-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+    /* Success */
+    .success-msg { display: none; text-align: center; padding: 2rem; }
+    .success-msg .check {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.1);
+      border: 2px solid #10b981;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.2rem;
+      animation: popIn .5s ease;
+    }
+    @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+    .success-msg h3 { font-family: 'Tajawal',sans-serif; font-size: 1.6rem; font-weight: 900; margin-bottom: .5rem; }
+    .success-msg p { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+    .success-msg a {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: .85rem 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50px;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    @media (max-width: 900px) {
+      .left-panel { display: none; }
+      .right-panel { width: 100%; border-right: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <a href="index.html" class="left-logo">كود<span>ماستر</span></a>
+
+  <div class="left-content">
+    <h2>أهلاً بعودتك<br/>إلى عالم <em>البرمجة</em></h2>
+    <p>سجّل الدخول وتابع رحلتك من حيث توقفت. مسارات تعليمية، مشاريع، وشهادات بانتظارك.</p>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-num">+٤٢٠٠٠</div>
+        <div class="stat-label">طالب نشط</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">٩٦٪</div>
+        <div class="stat-label">نسبة الرضا</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">+٢٠٠</div>
+        <div class="stat-label">درس تفاعلي</div>
+      </div>
+    </div>
+
+    <div class="left-tracks">
+      <div class="track-pill"><span>🌐</span> تطوير الويب الكامل</div>
+      <div class="track-pill"><span>🤖</span> الذكاء الاصطناعي وتعلم الآلة</div>
+      <div class="track-pill"><span>📱</span> تطوير تطبيقات الموبايل</div>
+      <div class="track-pill"><span>☁️</span> الحوسبة السحابية وDevOps</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="form-box">
+
+    <div id="form-content">
+      <h1>تسجيل الدخول 👋</h1>
+      <p>ليس لديك حساب؟ <a href="register.html">سجّل مجاناً</a></p>
+
+      <!-- Google Sign-In -->
+      <div id="g_id_onload"
+           data-client_id="394700867447-c8qlimk36ia4fdtpmceoq9eka4mqoi5i.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="google-signin-wrap">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="filled_black"
+             data-text="signin_with"
+             data-shape="rectangular"
+             data-logo_alignment="left"
+             style="width:100%">
+        </div>
+      </div>
+
+      <div class="google-welcome" id="google_welcome"></div>
+
+      <div class="divider">أو سجّل الدخول بالإيميل</div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <div class="field-wrap">
+            <span class="icon">📧</span>
+            <input type="email" id="email" placeholder="ahmed@example.com"/>
+            <div class="err-msg">بريد إلكتروني غير صحيح</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>كلمة المرور</label>
+          <div class="field-wrap">
+            <span class="icon" id="toggle-pass" onclick="togglePass()" style="cursor:pointer;pointer-events:all;opacity:1">👁</span>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور"/>
+            <div class="err-msg">كلمة المرور مطلوبة</div>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember">
+            <input type="checkbox" id="remember"/> تذكرني
+          </label>
+          <a href="#" class="forgot">نسيت كلمة المرور؟</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          تسجيل الدخول ←
+        </button>
+      </form>
+
+      <div class="register-link">
+        ليس لديك حساب؟ <a href="register.html">أنشئ حساباً مجاناً</a>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-msg" id="success">
+      <div class="check">✅</div>
+      <h3 id="success-title">مرحباً بعودتك! 🎉</h3>
+      <p>تم تسجيل دخولك بنجاح.<br/>تابع رحلتك من حيث توقفت.</p>
+      <a href="courses.html">اذهب إلى المسارات ←</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Google Sign-In handler
+  function handleCredentialResponse(response) {
+    const payload = parseJwt(response.credential);
+    const welcome = document.getElementById('google_welcome');
+    welcome.style.display = 'block';
+    welcome.textContent = '✅ أهلاً بك يا ' + payload.name + '! جارٍ تسجيل دخولك...';
+    setTimeout(() => {
+      document.getElementById('form-content').style.display = 'none';
+      document.getElementById('success-title').textContent = 'أهلاً بعودتك يا ' + payload.name + '! 🎉';
+      document.getElementById('success').style.display = 'block';
+    }, 1200);
+  }
+
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  }
+
+  // Password toggle
+  function togglePass() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('toggle-pass');
+    if (input.type === 'password') { input.type = 'text'; icon.textContent = '🙈'; }
+    else { input.type = 'password'; icon.textContent = '👁'; }
+  }
+
+  // Form validation
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    [email, password].forEach(f => f.classList.remove('error'));
+
+    if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { email.classList.add('error'); valid = false; }
+    if (!password.value.trim()) { password.classList.add('error'); valid = false; }
+
+    if (!valid) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.classList.add('loading');
+    btn.textContent = 'جارٍ تسجيل الدخول...';
+
+    setTimeout(() => {
+      document.getElementById('form-content').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    }, 1500);
+  });
+</script>
+</body>
+</html>
