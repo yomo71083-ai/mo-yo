@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إنشاء حساب – كودماستر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg: #050810;
+      --card: #111827;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --accent3: #f97316;
+      --text: #e8edf5;
+      --muted: #7a8ba0;
+      --border: rgba(0,229,255,0.12);
+      --input-bg: rgba(255,255,255,0.04);
+      --input-border: rgba(255,255,255,0.1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Grid bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.2;
+      animation: drift 9s ease-in-out infinite alternate;
+    }
+    .b1 { width: 420px; height: 420px; background: var(--accent2); top: -100px; right: -80px; }
+    .b2 { width: 300px; height: 300px; background: var(--accent); bottom: -60px; left: 40px; animation-delay: -4s; }
+    .b3 { width: 200px; height: 200px; background: var(--accent3); top: 50%; left: 50%; animation-delay: -7s; }
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to { transform: translate(30px,-30px) scale(1.12); }
+    }
+
+    .left-logo {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      margin-bottom: 4rem;
+      display: inline-block;
+    }
+    .left-logo span { -webkit-text-fill-color: var(--accent3); }
+
+    .left-content h2 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+      animation: fadeUp .7s ease both;
+    }
+    .left-content h2 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .left-content p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s ease .1s both;
+    }
+
+    .perks { display: flex; flex-direction: column; gap: .9rem; animation: fadeUp .7s ease .2s both; }
+    .perk {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      font-size: .92rem;
+      color: var(--muted);
+    }
+    .perk-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .left-quote {
+      margin-top: 4rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      animation: fadeUp .7s ease .3s both;
+    }
+    .left-quote p { font-size: .88rem; color: var(--muted); line-height: 1.7; font-style: italic; margin-bottom: .8rem; }
+    .left-quote-author { display: flex; align-items: center; gap: .7rem; }
+    .q-avatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(0,229,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: .95rem; }
+    .left-quote-author span { font-size: .8rem; color: var(--muted); }
+    .left-quote-author strong { font-size: .85rem; display: block; }
+
+    /* ── RIGHT PANEL (FORM) ── */
+    .right-panel {
+      width: 500px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+      border-right: 1px solid var(--border);
+      background: rgba(13,18,32,0.6);
+      backdrop-filter: blur(20px);
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp .7s ease .1s both;
+    }
+
+    .form-box h1 {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: .4rem;
+    }
+    .form-box > p {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 2rem;
+    }
+    .form-box > p a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+    /* Social buttons */
+    .social-btns { display: flex; gap: .8rem; margin-bottom: 1.5rem; }
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .75rem;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+    .social-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Form fields */
+    .form-row { display: flex; gap: .8rem; }
+    .field { margin-bottom: 1.1rem; flex: 1; }
+    .field label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+    .field-wrap { position: relative; }
+    .field-wrap .icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      pointer-events: none;
+      opacity: .5;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 12px;
+      padding: .8rem 2.6rem .8rem 1rem;
+      font-family: 'Cairo', sans-serif;
+      font-size: .92rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      appearance: none;
+    }
+    .field input::placeholder { color: rgba(122,139,160,0.6); }
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+      background: rgba(0,229,255,0.04);
+      box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+    }
+    .field input.error { border-color: #ef4444; }
+    .field .err-msg { font-size: .75rem; color: #ef4444; margin-top: .3rem; display: none; }
+    .field input.error + .err-msg,
+    .field input.error ~ .err-msg { display: block; }
+
+    /* Password strength */
+    .strength-bar { display: flex; gap: 4px; margin-top: .5rem; }
+    .strength-seg { flex: 1; height: 3px; border-radius: 10px; background: rgba(255,255,255,0.07); transition: background .3s; }
+
+    /* Checkbox */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: .7rem;
+      margin-bottom: 1.5rem;
+      font-size: .83rem;
+      color: var(--muted);
+    }
+    .checkbox-row input[type=checkbox] {
+      width: 18px; height: 18px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    .checkbox-row a { color: var(--accent); text-decoration: none; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      box-shadow: 0 0 30px rgba(0,229,255,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,255,0.35); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn.loading { opacity: .7; pointer-events: none; }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .login-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .success-msg .check {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.1);
+      border: 2px solid #10b981;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.2rem;
+      animation: popIn .5s ease;
+    }
+    @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+    .success-msg h3 { font-family: 'Tajawal',sans-serif; font-size: 1.6rem; font-weight: 900; margin-bottom: .5rem; }
+    .success-msg p { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+    .success-msg a {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: .85rem 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50px;
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    @media (max-width: 900px) {
+      .left-panel { display: none; }
+      .right-panel { width: 100%; border-right: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <a href="index.html" class="left-logo">كود<span>ماستر</span></a>
+
+  <div class="left-content">
+    <h2>ابدأ رحلتك<br/>في عالم <em>البرمجة</em></h2>
+    <p>انضم لأكثر من ٤٢,٠٠٠ طالب يتعلمون البرمجة بالعربي ويغيّرون مستقبلهم كل يوم.</p>
+
+    <div class="perks">
+      <div class="perk">
+        <div class="perk-icon">🎁</div>
+        <span>٢٠+ درس مجاني فور التسجيل — بدون بطاقة ائتمانية</span>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">🤖</div>
+        <span>مساعد ذكاء اصطناعي يساعدك على مدار الساعة</span>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">🏆</div>
+        <span>شهادات معترف بها عند إنهاء كل مسار</span>
+      </div>
+      <div class="perk">
+        <div class="perk-icon">👥</div>
+        <span>مجتمع من المطورين العرب يدعمك في رحلتك</span>
+      </div>
+    </div>
+
+    <div class="left-quote">
+      <p>"بعد ٦ أشهر في كودماستر، حصلت على وظيفتي الأولى كمطور Front-End براتب ضاعف دخلي ثلاث مرات!"</p>
+      <div class="left-quote-author">
+        <div class="q-avatar">👨‍💻</div>
+        <div>
+          <strong>أحمد محمود</strong>
+          <span>Front-End Developer – القاهرة</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL (FORM) -->
+<div class="right-panel">
+  <div class="form-box">
+
+    <div id="form-content">
+      <h1>إنشاء حساب 🚀</h1>
+      <p>عندك حساب بالفعل؟ <a href="login.html">سجّل الدخول</a></p>
+
+      <!-- Google Sign-In -->
+      <div id="g_id_onload"
+           data-client_id="394700867447-c8qlimk36ia4fdtpmceoq9eka4mqoi5i.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+
+      <div class="social-btns">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="filled_black"
+             data-text="signup_with"
+             data-shape="rectangular"
+             data-logo_alignment="left"
+             style="width:100%">
+        </div>
+      </div>
+
+      <!-- Welcome msg after Google login -->
+      <div id="google_user_info" style="display:none;margin-bottom:1rem;padding:.9rem 1.2rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;font-size:.88rem;color:#10b981;font-weight:700;text-align:center"></div>
+
+      <div class="divider">أو سجّل بالإيميل</div>
+
+      <!-- Form -->
+      <form id="reg-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label>الاسم الأول</label>
+            <div class="field-wrap">
+              <span class="icon">👤</span>
+              <input type="text" id="fname" placeholder="أحمد" />
+            </div>
+            <div class="err-msg">الاسم مطلوب</div>
+          </div>
+          <div class="field">
+            <label>الاسم الأخير</label>
+            <div class="field-wrap">
+              <span class="icon">👤</span>
+              <input type="text" id="lname" placeholder="محمود" />
+            </div>
+            <div class="err-msg">الاسم مطلوب</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <div class="field-wrap">
+            <span class="icon">📧</span>
+            <input type="email" id="email" placeholder="ahmed@example.com" />
+          </div>
+          <div class="err-msg" id="email-err">بريد إلكتروني غير صحيح</div>
+        </div>
+
+        <div class="field">
+          <label>كلمة المرور</label>
+          <div class="field-wrap">
+            <span class="icon" id="toggle-pass" onclick="togglePass()" style="cursor:pointer;pointer-events:all;opacity:1">👁</span>
+            <input type="password" id="password" placeholder="٨ أحرف على الأقل" oninput="checkStrength(this.value)" />
+          </div>
+          <div class="strength-bar">
+            <div class="strength-seg" id="s1"></div>
+            <div class="strength-seg" id="s2"></div>
+            <div class="strength-seg" id="s3"></div>
+            <div class="strength-seg" id="s4"></div>
+          </div>
+          <div class="err-msg" id="pass-err">كلمة المرور قصيرة جداً (٨ أحرف على الأقل)</div>
+        </div>
+
+        <div class="field">
+          <label>المسار الذي تريد تعلمه</label>
+          <div class="field-wrap">
+            <span class="icon">🎯</span>
+            <select id="track">
+              <option value="">اختر مسارك...</option>
+              <option value="web">🌐 تطوير الويب الكامل</option>
+              <option value="ai">🤖 الذكاء الاصطناعي</option>
+              <option value="mobile">📱 تطوير التطبيقات</option>
+              <option value="cloud">☁️ الحوسبة السحابية</option>
+              <option value="basics">🖥️ أساسيات البرمجة (مجاني)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="terms"/>
+          <label for="terms">أوافق على <a href="#">شروط الاستخدام</a> و<a href="#">سياسة الخصوصية</a></label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          إنشاء حسابي مجاناً 🚀
+        </button>
+      </form>
+
+      <div class="login-link">
+        عندك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-msg" id="success">
+      <div class="check">✅</div>
+      <h3>أهلاً بك في كودماستر! 🎉</h3>
+      <p>تم إنشاء حسابك بنجاح.<br/>ابدأ رحلتك الآن وتعلّم أول ١٠ دروس مجاناً.</p>
+      <a href="courses.html">ابدأ التعلم ←</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Google Sign-In handler
+  function handleCredentialResponse(response) {
+    const payload = parseJwt(response.credential);
+    const info = document.getElementById('google_user_info');
+    info.style.display = 'block';
+    info.textContent = '✅ أهلاً بك يا ' + payload.name + '! جارٍ إنشاء حسابك...';
+    setTimeout(() => {
+      document.getElementById('form-content').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+      document.querySelector('#success h3').textContent = 'أهلاً بك يا ' + payload.name + '! 🎉';
+    }, 1200);
+  }
+
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  }
+
+  // Password toggle
+  function togglePass() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('toggle-pass');
+    if (input.type === 'password') { input.type = 'text'; icon.textContent = '🙈'; }
+    else { input.type = 'password'; icon.textContent = '👁'; }
+  }
+
+  // Password strength
+  function checkStrength(val) {
+    const segs = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
+    const colors = ['#ef4444', '#f97316', '#fbbf24', '#10b981'];
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    segs.forEach((s, i) => { s.style.background = i < score ? colors[score - 1] : 'rgba(255,255,255,0.07)'; });
+  }
+
+  // Form validation & submit
+  document.getElementById('reg-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    const fname = document.getElementById('fname');
+    const lname = document.getElementById('lname');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const terms = document.getElementById('terms');
+
+    // Reset
+    [fname, lname, email, password].forEach(f => f.classList.remove('error'));
+
+    if (!fname.value.trim()) { fname.classList.add('error'); valid = false; }
+    if (!lname.value.trim()) { lname.classList.add('error'); valid = false; }
+    if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { email.classList.add('error'); valid = false; }
+    if (password.value.length < 8) { password.classList.add('error'); valid = false; }
+    if (!terms.checked) { alert('يجب الموافقة على شروط الاستخدام'); valid = false; }
+
+    if (!valid) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.classList.add('loading');
+    btn.textContent = 'جارٍ إنشاء الحساب...';
+
+    setTimeout(() => {
+      document.getElementById('form-content').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    }, 1500);
+  });
+</script>
+</body>
+</html>
